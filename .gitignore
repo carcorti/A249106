@@ -5,4 +5,8 @@ __pycache__/
 *.log
 *.out
 *.pdf
+!/paper/A249106.pdf
 *.synctex.gz
+*.toc
+*.fls
+*.fdb_latexmk

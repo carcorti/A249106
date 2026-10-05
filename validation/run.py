@@ -174,10 +174,12 @@ def main():
     cff = yaml.safe_load((ROOT/'CITATION.cff').read_text())
     require(cff['cff-version']=='1.2.0' and cff['authors']==[
         {'family-names':'Corti','given-names':'Carlo','email':'carlo.corti@outlook.com'}], 'CFF identity')
-    require(cff['version']=='v1.0' and cff['license']=='MIT' and
+    require(cff['version']=='v1.0.1' and cff['license']=='MIT' and
             cff['repository-code']=='https://github.com/carcorti/A249106' and
-            cff['doi']=='10.5281/zenodo.xxxxxxxx' and
-            cff['preferred-citation']['doi']==cff['doi'], 'draft citation metadata')
+            cff['doi']=='10.5281/zenodo.23155533' and
+            cff['preferred-citation']['doi']==cff['doi'] and
+            cff['url']==cff['preferred-citation']['url']=='https://doi.org/'+cff['doi'],
+            'release citation metadata')
     rows, positives = positive_checks()
     print('Seven positives and eight prime parameters PASS (normal / -O)',flush=True)
     with tempfile.TemporaryDirectory(prefix='a249106-') as tmp:

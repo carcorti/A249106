@@ -6,6 +6,12 @@
 \usepackage{microtype}
 \usepackage{xurl}
 \usepackage[colorlinks=true,linkcolor=black,citecolor=blue,urlcolor=blue]{hyperref}
+\hypersetup{
+ pdftitle={An Exact Extension and an Infinite Family for OEIS A249106},
+ pdfauthor={Carlo Corti},
+ pdfsubject={Exact arithmetic-derivative search and an infinite family},
+ pdfkeywords={arithmetic derivative, Pythagorean sextuple, OEIS A249106}
+}
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{proposition}[theorem]{Proposition}
@@ -90,9 +96,9 @@ indexed prefix through seven and supplies an exclusion bound. Subsequent
 analysis of four scaled witnesses gives an infinite family by proof. The
 fixed-point identity used in that proof is prior arithmetic-derivative theory;
 no absolute priority claim is made for its specialization to this seed.
-The project artifacts are associated with the intended repository and archive
-reference~\cite{project}; those locators designate a draft release, not a
-verified public deposit.
+The project artifacts are publicly available from the GitHub repository and
+Zenodo archive cited in reference~\cite{project}. The designated Zenodo DOI
+identifies the release series rather than one immutable deposited version.
 
 \section{Finite enumeration and witnesses}
 The search began immediately after the accepted fifth term and stopped at
@@ -598,8 +604,8 @@ validator imports that same trial-division routine, requires textual identity
 of the recorded first hit with the frozen, previously validated sixth-term
 input, and recomputes only the new seventh-term hit. These two validators are
 independent of the C factorization backend, but share their own Python
-arithmetic routine and the defining equation. A reproducible deposit would
-need the frozen inputs as well as the scripts; a script alone cannot replay
+arithmetic routine and the defining equation. The public deposit includes
+the frozen inputs as well as the scripts; a script alone cannot replay
 the historical protocol states.
 
 \section{Validation and measured execution}\label{sec:validation}
@@ -697,15 +703,17 @@ comparison distinguish the mechanism from its particular specializations;
 the literature search does not certify absolute priority.
 
 \section{Data availability}
-The source code, build recipe, accepted baseline, indexed result table,
-complete segment records, environment and timing records, independent
-positive-check scripts with their frozen inputs, and validation summaries
-are retained locally. The witness table is also embedded in this manuscript.
-These artifact classes are intended for a synchronized public release.
-The seed checks and research records for the expanded exposition are
-also retained locally; their public distribution has not been verified.
-At this drafting stage a public package and a Zenodo deposit have not been
-verified, and the designated draft locators do not establish availability.
+The public GitHub and Zenodo package~\cite{project} contains the source code,
+build recipe, accepted baseline, indexed results, complete segment,
+environment and timing records, independent positive-check scripts with
+frozen inputs, bounded seed checks and validation summaries. The manuscript
+is supplied as monolithic LaTeX source and a matching PDF; its witness table
+is embedded here. Both providers' initial release payloads were downloaded,
+checked against the full inventory and independently passed the bounded
+validation command. This does not independently rescan negative intervals.
+The designated DOI identifies the release series; exact deposits have
+separate DOIs. Primary-source locators are included; third-party full texts,
+private research notes and external reviews are excluded.
 
 \section{AI use disclosure}
 Large language models were used as research and drafting assistants during
@@ -823,9 +831,9 @@ GNU MP project, GNU MP 6.3.0 manual, Section 5.8, Root extraction functions.
 C. Corti, \emph{An Exact Extension and an Infinite Family for OEIS A249106}
 (2026), GitHub repository and Zenodo archive.
 \url{https://github.com/carcorti/A249106};
-\url{https://doi.org/10.5281/zenodo.xxxxxxxx}.
-Designated draft locators; the Zenodo identifier is a placeholder and a public
-release has not been verified.
+\url{https://doi.org/10.5281/zenodo.23155533}.
+The Zenodo DOI identifies the release series; exact deposited versions have
+separate version-specific DOIs.
 \end{thebibliography}
 \end{document}
 

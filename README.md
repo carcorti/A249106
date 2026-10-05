@@ -2,12 +2,16 @@
 
 Carlo Corti — independent researcher — carlo.corti@outlook.com.
 
-This is a local publication draft, prepared October 5, 2026 for author inspection.
-The intended first release is **v1.0**, at
+Publication package for **v1.0.1**, at
 [carcorti/A249106](https://github.com/carcorti/A249106).
-The DOI `10.5281/zenodo.xxxxxxxx` is a placeholder. No public release or Zenodo
-deposit is certified by this directory. The date in `CITATION.cff` records this
-local preparation and must be checked against the actual first release date.
+The designated [Zenodo concept DOI](https://doi.org/10.5281/zenodo.23155533)
+identifies the release series. Individual deposits have separate version-specific
+DOIs. The initial v1.0 release was downloaded and validated independently from
+GitHub and Zenodo; its exact deposit is
+[10.5281/zenodo.23155534](https://doi.org/10.5281/zenodo.23155534).
+The v1.0.1 package finalizes manuscript availability, citation metadata and the
+matching PDF. Its publication timestamp is supplied by the actual release;
+`CITATION.cff` does not invent a date before publication.
 
 ## Result and mathematical scope
 
@@ -64,7 +68,7 @@ complete exact execution, rather than on timing or digests alone.
 | --- | --- |
 | `README.md` | Project overview, complete file inventory and public commands |
 | `src/a249106.c`, `src/Makefile` | Exact campaign source and build recipe; stable names, no code changes |
-| `paper/A249106_v4.tex` | Current English monolithic manuscript, including its bibliography; no external figures or `.bib` required |
+| `paper/A249106.tex`, `paper/A249106.pdf` | English monolithic manuscript and matching PDF, including the bibliography; no external figures or `.bib` required |
 | `data/b249106.txt` | Canonical contiguous b-file, indices 1 through 7 |
 | `data/witnesses.tsv` | Indexed values, four derivatives and square roots |
 | `data/family.tsv` | Positive examples of the proved prime family, without sequence indices |
@@ -80,7 +84,7 @@ complete exact execution, rather than on timing or digests alone.
 | `evidence/tests.tar.gz` | Relevant earlier-build and final-build test evidence, exact earlier source/executable, original test scripts and consolidation record |
 | `evidence/origins.tsv`, `evidence/renames.json` | Original/public name and hash map, and exact validator path substitutions |
 | `evidence/sources.md` | Research source locators and provenance boundaries |
-| `SHA256SUMS`, `CITATION.cff`, `LICENSE`, `.gitignore` | Package integrity, citation draft, existing author-supplied MIT license and generated-file exclusions |
+| `SHA256SUMS`, `CITATION.cff`, `LICENSE`, `.gitignore` | Package integrity, release-series citation, existing author-supplied MIT license and generated-file exclusions |
 
 Archive member names are short; long historical evidence names are mapped to
 compact identifiers in `evidence/origins.tsv`. Original evidence bytes are
@@ -157,17 +161,28 @@ separate from the package's bounded check.
 
 ## Manuscript and references
 
-The TeX manuscript keeps its provisional **v4** filename and DOI placeholder.
-It was copied without content changes. Scientific review was closed on the
-expanded v3; v4 adds a local clarification of the first-term assumptions, not
-another full external review. No PDF is bundled or generated during preparation.
-To check TeX syntax without creating a PDF, use a temporary output directory:
+The manuscript source is `paper/A249106.tex`; the matching PDF is
+`paper/A249106.pdf`. Both use the designated release-series DOI and verified
+repository URL. The release number describes the package, not the manuscript
+filename. The scientific review and mathematical evidence are retained;
+this finalization updates publication availability and citation metadata.
+
+To rebuild the PDF, install pdfLaTeX and the TeX packages `fontenc`, `inputenc`,
+`lmodern`, `amsmath`, `amssymb`, `amsthm`, `booktabs`, `array`, `geometry`,
+`microtype`, `xurl` and `hyperref`. From the repository root, compile in a
+temporary output directory until references settle:
 
 ```sh
-mkdir -p /tmp/a249106-tex
-pdflatex -draftmode -halt-on-error -interaction=nonstopmode -output-directory=/tmp/a249106-tex paper/A249106_v4.tex
-pdflatex -draftmode -halt-on-error -interaction=nonstopmode -output-directory=/tmp/a249106-tex paper/A249106_v4.tex
+tex_out=$(mktemp -d)
+pdflatex -halt-on-error -interaction=nonstopmode -output-directory="$tex_out" paper/A249106.tex
+pdflatex -halt-on-error -interaction=nonstopmode -output-directory="$tex_out" paper/A249106.tex
+pdflatex -halt-on-error -interaction=nonstopmode -output-directory="$tex_out" paper/A249106.tex
 ```
+
+The rebuilt PDF is `$tex_out/A249106.pdf`. Inspect the final log for warnings
+and overfull/underfull boxes. Compilation timestamps may change PDF bytes;
+`SHA256SUMS` authenticates the delivered PDF, not an independently rebuilt one.
+Auxiliary files and the rebuilt copy stay outside the checked package.
 
 Citation guidance is in `CITATION.cff`: cite both the manuscript and the software.
 The existing MIT license applies to the author-provided project material;
@@ -189,7 +204,8 @@ The aggregate rate is approximately 1.20 million inputs per second for that
 campaign, not a bound on another search. The earlier prefix was not rescanned,
 and sanitizer tests were bounded, with the scopes in `validation/notes.md`.
 
-This directory was prepared as **PACKAGE_DRAFT — AWAITING AUTHOR INSPECTION**.
-Its preparation checks and any later preflight apply to local bytes. Upload,
-release metadata finalization, DOI replacement and verification of the actual
-GitHub/Zenodo downloads remain separate steps.
+The package targets **v1.0.1**. Local preflight checks apply to the frozen
+intended bytes; actual GitHub and Zenodo payloads are verified separately after
+publication and synchronization. Historical campaign and test records remain
+unchanged. No new sequence terms or computation campaign are introduced by
+this release.

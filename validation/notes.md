@@ -111,6 +111,7 @@ storage. No dependency failure is interpreted as a passing sanitizer test.
 Older drafts, external reviews, chat prompts, duplicate superseded test suites,
 provisional planning reports and third-party full texts remain outside the
 publication directory. Necessary current records and earlier-source evidence
-are compressed, rather than represented by a claim-only summary. No PDF,
-compiled public executable, cache, actual remote release or sparse a-file is
-part of this draft.
+are compressed, rather than represented by a claim-only summary. The manuscript source and matching PDF are included. No compiled public
+executable, cache or sparse a-file is part of the package. The initial public
+release was verified from GitHub and Zenodo; checks for the upcoming package
+release apply separately to its actual distributed payloads.
