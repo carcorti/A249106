@@ -1,0 +1,8 @@
+/src/a249106
+__pycache__/
+*.pyc
+*.aux
+*.log
+*.out
+*.pdf
+*.synctex.gz

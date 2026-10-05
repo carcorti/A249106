@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "Please cite the manuscript and software when using these results. Draft metadata: the DOI is a placeholder; v1.0 is the intended first release."
+type: software
+title: "A249106: exact arithmetic-derivative search and infinite family"
+authors:
+  - family-names: Corti
+    given-names: Carlo
+    email: carlo.corti@outlook.com
+version: v1.0
+date-released: '2026-10-05'
+license: MIT
+repository-code: https://github.com/carcorti/A249106
+url: https://doi.org/10.5281/zenodo.xxxxxxxx
+doi: 10.5281/zenodo.xxxxxxxx
+abstract: "Exact C17 search for OEIS A249106, seven indexed witnesses, complete recorded coverage through 10^10, and a proof of the family 4791*p^p for every prime p."
+keywords:
+  - arithmetic derivative
+  - integer sequences
+  - exact computation
+  - Pythagorean tuples
+preferred-citation:
+  type: article
+  title: "An Exact Extension and an Infinite Family for OEIS A249106"
+  authors:
+    - family-names: Corti
+      given-names: Carlo
+  year: 2026
+  doi: 10.5281/zenodo.xxxxxxxx
+  url: https://doi.org/10.5281/zenodo.xxxxxxxx

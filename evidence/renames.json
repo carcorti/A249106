@@ -1,0 +1,116 @@
+[
+  {
+    "source": "validation/verify_a6_20261002.py",
+    "destination": "validation/a6.py",
+    "substitutions": [
+      [
+        "verify_a6_20261002.py",
+        "a6.py"
+      ],
+      [
+        "'runs/1E10/hits.tsv'",
+        "'data/hit6.tsv'"
+      ]
+    ]
+  },
+  {
+    "source": "validation/verify_a7_20261002.py",
+    "destination": "validation/a7.py",
+    "substitutions": [
+      [
+        "verify_a6_20261002",
+        "a6"
+      ],
+      [
+        "verify_a7_20261002.py",
+        "a7.py"
+      ],
+      [
+        "'runs/1E10/hits.tsv'",
+        "'data/hit7.tsv'"
+      ],
+      [
+        "'validation/a6_20261002/p2/hits.tsv'",
+        "'data/hit6.tsv'"
+      ],
+      [
+        "'validation/a6.py'",
+        "'validation/a6.py'"
+      ]
+    ]
+  },
+  {
+    "source": "validation/oracle_v1.py",
+    "destination": "validation/oracle.py",
+    "substitutions": [
+      [
+        "oracle_v1.py",
+        "oracle.py"
+      ]
+    ]
+  },
+  {
+    "source": "validation/run_local_v4.py",
+    "destination": "validation/regress.py",
+    "substitutions": [
+      [
+        "local_v4_round03",
+        "r4"
+      ],
+      [
+        "oracle_v1.py",
+        "oracle.py"
+      ],
+      [
+        "backend_harness_v1.c",
+        "backend.c"
+      ]
+    ]
+  },
+  {
+    "source": "validation/run_v4_extra.py",
+    "destination": "validation/extra.py",
+    "substitutions": [
+      [
+        "local_v4_round03_extra",
+        "extra"
+      ],
+      [
+        "tsan_controls_v1.c",
+        "tsan.c"
+      ]
+    ]
+  },
+  {
+    "source": "validation/review04_paths.py",
+    "destination": "validation/paths.py",
+    "substitutions": [
+      [
+        "review04_paths.py",
+        "paths.py"
+      ],
+      [
+        "\"review04_\" + PHASE + \"_paths\"",
+        "\"paths_\" + PHASE"
+      ],
+      [
+        "\"_r2\"",
+        "\"\""
+      ]
+    ]
+  },
+  {
+    "source": "validation/review04_previous_io.py",
+    "destination": "validation/io.py",
+    "substitutions": [
+      [
+        "f'review04_{PHASE}_io'",
+        "f'io_{PHASE}'"
+      ],
+      [
+        "review03_io_inject.c",
+        "inject.c"
+      ]
+    ]
+  }
+]

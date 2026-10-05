@@ -1,0 +1,831 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,amsmath,amssymb,amsthm,booktabs,array}
+\usepackage[margin=25mm]{geometry}
+\usepackage{microtype}
+\usepackage{xurl}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=blue,urlcolor=blue]{hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\D}{\operatorname{D}}
+\newcommand{\N}{\mathbb{N}}
+\title{An Exact Extension and an Infinite Family for OEIS A249106}
+\author{Carlo Corti\\Independent researcher\\\texttt{carlo.corti@outlook.com}}
+\date{October 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+OEIS A249106 lists integers whose squares, together with the squares of their
+first four arithmetic derivatives, sum to a square. An exact C enumeration of
+the inclusive interval $[434325392,10^{10}]$, comprising $9565674609$ integers,
+found precisely $1102826289$ and $3945594513$. Relative to the accepted
+five-term OEIS prefix, these are the sixth and seventh terms. Their positive
+witnesses have independent trial-division checks; the exclusion of all other
+inputs relies on the reviewed enumeration algorithm and its complete segment
+records, rather than a second independent scan. Separately, the fixed-point
+identity $\D(p^p)=p^p$ yields the family $4791p^p$ for every prime $p$.
+An explicit seed calculation and an induction prove membership and hence
+infinitude, without extrapolating the finite search. A general seed
+criterion also explains analogous constructions at other chain lengths,
+including $128p^p$ for A230543. The fixed-point machinery is historical;
+absolute priority for the seed specializations is not asserted.
+Combining the A249106 family
+with the enumeration bounds the eighth term by
+$10^{10}<a(8)\le1366928213897301$; its exact value remains undetermined.
+\end{abstract}
+\noindent\textbf{MSC 2020:} 11A25, 11D09, 11Y55.\\
+\textbf{Keywords:} arithmetic derivative; Pythagorean sextuple; exact enumeration;
+segmented sieve; OEIS A249106.
+
+\section{Definition and context}
+The arithmetic derivative on nonnegative integers is determined by
+$\D(0)=\D(1)=0$, $\D(p)=1$ for primes $p$, and the product rule.
+For $x\ge2$, unique factorization gives
+\begin{equation}\label{eq:derivative}
+ x=\prod_p p^{e_p},\qquad \D(x)=\sum_{p\mid x}e_p\frac{x}{p}.
+\end{equation}
+These elementary properties and the fixed points $p^p$ are discussed by
+Ufnarovski and \AA hlander~\cite[Theorem 6]{ufnarovski} and in OEIS A003415~\cite{derivative}.
+The map is not additive. Iterated derivatives below always mean composition.
+Put $x_j=\D^j(n)$ for $0\le j\le4$, with $x_0=n$, and define
+\begin{equation}\label{eq:predicate}
+ Q(n)=\sum_{j=0}^4 x_j^2.
+\end{equation}
+A249106 is the increasing enumeration, with index offset one, of the integers
+$n\ge2$ for which $Q(n)=r^2$ for an integer $r\ge0$~\cite{sequence}.
+The restriction $n\ge2$ follows the entry's enumeration convention:
+$n=1$ would satisfy the bare equation trivially, since $Q(1)=1$.
+Its Pythagorean sextuple is $(x_0,x_1,x_2,x_3,x_4,r)$: five chain coordinates
+and the root, with no primitivity requirement.
+
+Paolo P. Lava introduced the sequence on October 21, 2014. The entry snapshot
+accepted for this project credits Ray Chandler with the fourth term on
+December 23, 2016 and the fifth on January 11, 2017. That snapshot has the
+five-term prefix
+\begin{equation}\label{eq:baseline}
+19164,\ 129357,\ 14971875,\ 45316123,\ 434325391.
+\end{equation}
+The archived entry snapshot agrees with the public OEIS entry, whose
+published prefix is~\eqref{eq:baseline}. The two additional terms reported
+here have not been submitted to OEIS.
+The prefix was checked at its five positive inputs; a full enumeration of
+$[2,434325391]$ was not repeated.
+
+Related entries concern different chain lengths or primitivity conditions:
+A210503 imposes a primitive three-coordinate condition; A230543 concerns
+four-coordinate tuples without that requirement. A249105, A249107 and A249110
+concern five-, seven- and ten-coordinate
+Pythagorean tuples~\cite{related}. They provide context rather than inclusion
+relations with A249106. General polynomial parametrizations of Pythagorean
+sextuples~\cite{frisch} do not enforce the successive arithmetic-derivative
+constraints in~\eqref{eq:predicate}.
+
+The results here have two distinct sources. The finite search extends the
+indexed prefix through seven and supplies an exclusion bound. Subsequent
+analysis of four scaled witnesses gives an infinite family by proof. The
+fixed-point identity used in that proof is prior arithmetic-derivative theory;
+no absolute priority claim is made for its specialization to this seed.
+The project artifacts are associated with the intended repository and archive
+reference~\cite{project}; those locators designate a draft release, not a
+verified public deposit.
+
+\section{Finite enumeration and witnesses}
+The search began immediately after the accepted fifth term and stopped at
+$10^{10}$. Seven completed segments partition the interval, as shown in
+Table~\ref{tab:coverage}. The two phases used blocks of $2^{20}$ inputs
+and eight threads. Phase 1 consisted of one segment configured for at most
+540 blocks and clipped at $10^9$. Phase 2 used segments of 1500 blocks,
+with the last clipped at $10^{10}$.
+\begin{table}[htbp]
+\centering
+\begin{tabular}{crrr}
+\toprule
+Phase/segment & First input & Last input & Hits\\
+\midrule
+1/0 & 434325392 & 1000000000 & 0\\
+2/0 & 1000000001 & 2572864000 & 1\\
+2/1 & 2572864001 & 4145728000 & 1\\
+2/2 & 4145728001 & 5718592000 & 0\\
+2/3 & 5718592001 & 7291456000 & 0\\
+2/4 & 7291456001 & 8864320000 & 0\\
+2/5 & 8864320001 & 10000000000 & 0\\
+\bottomrule
+\end{tabular}
+\caption{Completed inclusive segments of the finite search. The hit counts
+come from the enumeration records; the segment checks are not independent
+re-enumerations of non-hits.}\label{tab:coverage}
+\end{table}
+
+The interval cardinality is exactly
+\begin{equation}\label{eq:count}
+10^{10}-434325392+1=9565674609.
+\end{equation}
+Table~\ref{tab:witnesses} gives the entire consolidated prefix and all witness
+coordinates. Its first five rows derive from previously validated outputs of
+an earlier C build; the mathematical source regions are byte-identical in
+the final campaign build. The last two rows are campaign outputs that also
+agree with independently computed Python witnesses.
+\begin{table}[htbp]
+\centering\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{rrrrrrr}
+\toprule
+$i$ & $a(i)$ & $\D(a(i))$ & $\D^2(a(i))$ & $\D^3(a(i))$ & $\D^4(a(i))$ & $r$\\
+\midrule
+1 & 19164 & 25564 & 31848 & 58412 & 61916 & 96336\\
+2 & 129357 & 172557 & 214974 & 394281 & 417933 & 650268\\
+3 & 14971875 & 19971875 & 24881250 & 45634375 & 48371875 & 75262500\\
+4 & 45316123 & 198116 & 198120 & 419644 & 419648 & 45320875\\
+5 & 434325391 & 3315592 & 5447100 & 9543040 & 36609088 & 436016633\\
+6 & 1102826289 & 411955468 & 411955472 & 830107536 & 1973010320 & 2477395545\\
+7 & 3945594513 & 5263263313 & 6557049366 & 12026198429 & 12747622097 & 19834209612\\
+\bottomrule
+\end{tabular}
+\caption{Seven indexed witnesses. In every row the sum of squares of the
+five chain coordinates equals $r^2$.}\label{tab:witnesses}
+\end{table}
+
+\begin{theorem}[Finite computational result]\label{thm:finite}
+Subject to the accepted prefix~\eqref{eq:baseline} and the correctness and
+complete execution of the enumeration described in Section~\ref{sec:algorithm},
+the sixth and seventh terms are
+\[
+a(6)=1102826289,\qquad a(7)=3945594513,
+\]
+and there is no further member at most $10^{10}$.
+\end{theorem}
+\begin{proof}[Computational evidence]
+The seven completed records have adjacent endpoints and total cardinality
+\eqref{eq:count}. The program audits adjacency within each phase separately;
+the join from $10^9$ to $10^9+1$ is checked externally against the two
+configurations and the completed records. Their combined hit list consists exactly of the two values
+displayed. Both positive chains were separately recomputed by exhaustive
+trial division and integer square-root tests. All remaining inputs are
+excluded by the C enumeration, whose coverage and arithmetic invariants are
+given in Section~\ref{sec:algorithm}. File-integrity and native verification checks establish the
+consistency of the completed records, but do not constitute an independent
+second enumeration. Combining this finite result with the accepted earlier
+prefix gives the asserted indices.
+\end{proof}
+
+\section{An unconditional infinite family for A249106}\label{sec:family}
+\subsection{From observations to a statement for every prime}
+The first three terms and the seventh have the respective multipliers
+$2^2,3^3,5^5,7^7$ of $4791=3\cdot1597$. This observation admits an exact
+extension to every prime, using the known identity $\D(p^p)=p^p$.
+The observations suggested the seed; they do not prove the universal
+statement. The proof uses only the defining product rule, four small
+factorizations and one integer square identity. It applies to every prime,
+including primes beyond any computational search limit.
+
+\subsection{The historical fixed-point mechanism}
+For a prime $p$ and integer $k\ge1$, the product rule gives
+$\D(p^k)=kp^{k-1}$, hence $\D(p^p)=p^p$.
+These fixed points are established prior theory~\cite[Theorem 6]{ufnarovski}.
+The transition $T(m)=m+\D(m)$ is itself OEIS A129283~\cite{auxiliary}.
+Its connection with multiplication by $p^p$ was recorded in A003415
+by R. Zumkeller on April 7, 2007~\cite{derivative}.
+Its extension to a whole derivative chain follows by induction.
+
+\begin{lemma}\label{lem:scaling}
+Let $t$ be a positive integer with $\D(t)=t$, and put $T(m)=m+\D(m)$
+on nonnegative integers. For every $m\ge0$ and $j\ge0$,
+\begin{equation}\label{eq:scaling}
+ \D^j(tm)=tT^j(m).
+\end{equation}
+\end{lemma}
+\begin{proof}
+The case $j=0$ is immediate. If it holds at $j$, the product rule gives
+\[
+\D\bigl(tT^j(m)\bigr)=\D(t)T^j(m)+t\D\bigl(T^j(m)\bigr)
+=tT^{j+1}(m).
+\]
+This proves the induction. No coprimality condition is needed.
+\end{proof}
+For $t=p^p$ and $m>1$, the one-step identity appears in
+Ufnarovski and \AA hlander~\cite[Theorem 4]{ufnarovski}, whose divergence
+statement already uses iteration of that identity. By their Theorem 6,
+the positive fixed points $t$ in Lemma~\ref{lem:scaling} are exactly $p^p$.
+The lemma states the iterate formula explicitly and includes $m=0,1$.
+Since $\D$ is not additive, $T^j$ is a composition,
+not a binomial expansion in powers of $\D$.
+For example,
+$T^2(m)=m+\D(m)+\D(m+\D(m))$; replacing the last derivative by a sum
+of derivatives would be unjustified. Shared factors are allowed:
+$p=3$ divides the seed, and other primes can divide later seed coordinates.
+
+\subsection{The seed and the unconditional family}
+\begin{theorem}[Unconditional family]\label{thm:family}
+For every prime $p$, the integer $4791p^p$ belongs to A249106, with witness
+\begin{equation}\label{eq:family}
+p^p(4791,6391,7962,14603,15479,24084).
+\end{equation}
+In particular, A249106 is infinite.
+\end{theorem}
+\begin{proof}
+The following four factorizations give the seed calculation directly:
+\begin{align*}
+4791&=3\cdot1597, &\D(4791)&=1597+3=1600,\\
+6391&=7\cdot11\cdot83, &\D(6391)&=913+581+77=1571,\\
+7962&=2\cdot3\cdot1327, &\D(7962)&=3981+2654+6=6641,\\
+14603&=17\cdot859, &\D(14603)&=859+17=876.
+\end{align*}
+All displayed factors are prime, as can be checked by trial division through
+their integer square roots. Hence successive applications of $T$ yield
+$(4791,6391,7962,14603,15479)$, and
+\begin{equation}\label{eq:seed}
+4791^2+6391^2+7962^2+14603^2+15479^2=580039056=24084^2.
+\end{equation}
+For prime $p$, equation~\eqref{eq:derivative} gives $\D(p^p)=p^p$.
+Lemma~\ref{lem:scaling} and~\eqref{eq:seed} prove~\eqref{eq:family}.
+Explicitly, the four derivatives of $4791t$, where $t=p^p$, are
+$6391t$, $7962t$, $14603t$ and $15479t$, so
+\[
+ Q(4791p^p)=p^{2p}\,580039056=(24084p^p)^2.
+\]
+This is exactly the defining condition of A249106.
+The integers $4791p^p$ are distinct and unbounded as $p$ runs over the
+infinitely many primes, proving infinitude.
+\end{proof}
+
+If $q>p\ge2$, then $q^q>p^q>p^p$, so increasing prime parameters
+give increasing family members.
+Theorem~\ref{thm:family} has no hypothesis about the accepted prefix,
+completion of the C campaign, a primality conjecture, machine-word sizes
+or availability of a public software deposit. Its validity follows from
+the stated definition of $\D$. The indexed finite result in
+Theorem~\ref{thm:finite} has different dependencies.
+
+\subsection{Primitivity, scope and unknown indices}
+The seed sextuple is primitive: already $\gcd(4791,6391)=1$. Thus the common
+divisor of all six coordinates in~\eqref{eq:family} is exactly $p^p$.
+For rows 1 through 7 of Table~\ref{tab:witnesses}, the six-coordinate greatest
+common divisors are respectively
+\[
+4,\ 27,\ 3125,\ 1,\ 1,\ 1,\ 823543.
+\]
+In particular, rows 4, 5 and 6 are primitive witnesses outside this scaled
+family. Their first coordinates are not divisible by $1597$.
+Neither that divisibility nor the family is an exhaustive search filter.
+The primes $2,3,5,7$ yield indices $1,2,3,7$, so the prime parameter is
+not a formula for the sequence index.
+
+The product-rule proof also shows why arbitrary multipliers cannot be
+substituted for $p^p$: in general
+$\D(sm)=s\D(m)+m\D(s)$, so the seed transition is $T$ only when
+$\D(s)=s$. The theorem supplies a sufficient family, not a classification
+of every multiplier or every member.
+The ratios $\D^j(4791p^p)/(4791p^p)$, $0\le j\le4$, are independent
+of $p$, and the root/input ratio is $24084/4791$. The entire witness
+changes by a common scale, while its normalized shape stays fixed.
+
+Table~\ref{tab:unindexed} gives four further consequences.
+Here $n_p$ is indexed by its prime parameter, not $a(p)$ and not an
+assigned OEIS index. Each root is $r_p=24084p^p$ and the chain is
+given by~\eqref{eq:family}; the intervening intervals have not been enumerated.
+\begin{table}[htbp]
+\centering
+\begin{tabular}{rr}
+\toprule
+$p$ & $n_p=4791p^p$\\
+\midrule
+11 & 1366928213897301\\
+13 & 1451074635683484123\\
+17 & 3963308094697439437172007\\
+19 & 9478608570268562405492983389\\
+\bottomrule
+\end{tabular}
+\caption{Four proven members without assigned sequence indices.
+These symbolic consequences do not extend the indexed b-file.}
+\label{tab:unindexed}
+\end{table}
+
+\subsection{A bound without identification of the next term}
+\begin{corollary}\label{cor:eighth}
+The upper bound $a(8)\le4791\cdot11^{11}$ holds independently of the
+finite exclusion and completeness of the accepted baseline. With the
+finite-result assumptions of Theorem~\ref{thm:finite}, the combined bounds are
+\begin{equation}\label{eq:eighth}
+10^{10}<a(8)\le4791\cdot11^{11}=1366928213897301.
+\end{equation}
+\end{corollary}
+\begin{proof}
+The seven distinct positive members in Table~\ref{tab:witnesses}, whose
+chains were recomputed by Python trial division as described in
+Section~\ref{sec:validation}, and the
+$p=11$ member of Theorem~\ref{thm:family} give eight distinct members
+at most $4791\cdot11^{11}$. This proves the upper bound without assuming
+that the table contains every earlier member. The $p=11$ member exceeds
+$10^{10}$ and has root $24084\cdot11^{11}=6871446274995324$.
+The lower bound follows from Theorem~\ref{thm:finite}.
+\end{proof}
+This upper-bound witness is derived symbolically, has no assigned sequence
+index, and was not found by extending the computational search. It even
+exceeds the implementation's conservative input cap discussed below.
+
+\section{Related families and the scope of the contribution}\label{sec:related}
+\subsection{A criterion for any derivative-chain length}
+The same proof works for other chain lengths, but each requires its own
+seed identity. For integers $h\ge1$ and $m\ge1$, define
+\[
+ Q_h(n)=\sum_{j=0}^h\bigl(\D^j(n)\bigr)^2,\qquad
+ S_h(m)=\sum_{j=0}^h\bigl(T^j(m)\bigr)^2.
+\]
+Lemma~\ref{lem:scaling} gives, for every prime $p$,
+\begin{equation}\label{eq:general-seed}
+ Q_h(mp^p)=p^{2p}S_h(m).
+\end{equation}
+Thus $mp^p$ has a square sum at depth $h$ if and only if $S_h(m)$
+is an integer square. For the converse, if $r^2=t^2S_h(m)$ with
+$t=p^p$, comparison of prime exponents shows $t\mid r$, so
+$S_h(m)=(r/t)^2$. The forward implication follows by multiplying
+an integer seed root by $t$. One exact seed calculation therefore proves
+membership for every prime; failure rules out all prime parameters for
+that seed and depth. This elementary criterion is derived here from the
+known product rule, without a claim that the scaling principle is new.
+Here $Q=Q_4$, and for A249106 the successful test is $S_4(4791)=24084^2$.
+
+The seed also has a conditional minimality property. If $m\ge1$ and
+$S_4(m)$ is a square, the case $p=2$ gives the member $4m$ of A249106.
+Thus, assuming the accepted first term $a(1)=19164$ is minimal,
+$4m\ge19164$ and $m\ge4791$. Since $4791$ passes the seed test, it is
+then the least depth-four seed. Similarly, assuming the recorded first
+member $512$ of A230543 is minimal, its least depth-two seed is $128$:
+every such seed yields a member $4m\ge512$, and $128$ passes the test
+in Section~\ref{sec:quadruple}. These are deductions from the respective
+first-term assumptions, not new independent exclusions of smaller inputs.
+
+\subsection{Established analogues in related OEIS entries}
+For $m=1$, all iterates of $T$ equal one and $S_h(1)=h+1$.
+Whenever $h+1=b^2$ for an integer $b$, every $p^p$ has a constant
+derivative chain and root $bp^p$. In particular,
+\[
+ Q_3(p^p)=(2p^p)^2,\qquad Q_8(p^p)=(3p^p)^2.
+\]
+The inclusions of A051674, the sequence $p^p$ for prime $p$, are already
+recorded in A249105 and A249110~\cite{related,auxiliary}.
+They prove infinitude of those sequences without a prime-pair conjecture.
+At depth four the seed $m=1$ fails because $S_4(1)=5$ is not a square;
+the nonconstant seed $4791$ supplies the needed replacement.
+
+A210503 has a primitive condition. Its entry records the twin-prime
+construction~\cite{related}: when $p$ and $p+2$ are primes,
+\[
+ n=p(p+2),\qquad \D(n)=2(p+1),\qquad
+ n^2+\D(n)^2=(n+2)^2.
+\]
+Here $p$ and $n$ are odd, and neither $p$ nor $p+2$ divides
+$2(p+1)$, so $\gcd(n,\D(n))=1$ and the triple is primitive.
+The identity follows from $n=(p+1)^2-1$.
+Each prime pair gives a member, but infinitude from this construction
+would require infinitely many twin primes.
+The scaled witnesses of Theorem~\ref{thm:family} have common divisor
+$p^p$ and cannot provide primitive triples simply by dropping coordinates.
+
+\subsection{An explicit comparison for A230543}\label{sec:quadruple}
+A230543 uses depth two with no primitivity restriction~\cite{related}.
+Since $128=2^7$ and $576=2^6\,3^2$,
+\[
+ \D(128)=448,\quad \D(576)=2112,\quad
+ (T^0(128),T(128),T^2(128))=(128,576,2688).
+\]
+The square identity
+\[
+ 128^2+576^2+2688^2=7573504=2752^2
+\]
+and~\eqref{eq:general-seed} prove that every prime $p$ gives the
+A230543 witness $p^p(128,576,2688,2752)$.
+The cases $p=2,3,5,7$ give $512,3456,400000,105413504$, all present
+in the consulted entry. This family is derived in the comparison:
+the consulted entry does not state the generating formula, and no
+priority claim is made for it. Its membership and infinitude follow
+from the proof independently of the recorded examples.
+
+For A249107 (depth five), the consulted entry supplies finite examples
+but no analogous generating family. This describes that entry, not the
+absence of a theorem elsewhere.
+Different depths give no inclusion into A249106 merely by deleting or
+appending derivatives.
+
+\subsection{Prior art and what is established here}
+The historical ingredients are the fixed points $p^p$, the identity
+for $\D(mp^p)$ and the transition $m+\D(m)$
+~\cite{ufnarovski,derivative,auxiliary}.
+Kovi\v{c} also discusses fixed points and higher derivatives in a broader
+differential-equation setting~\cite[Sections 1.2 and 2.1]{kovic}.
+The contribution made explicit in Theorem~\ref{thm:family} is the
+specialization to the verified seed $4791$, its complete chain witness
+and the resulting unconditional infinitude of A249106.
+It was proved after the finite campaign, rather than used as a filter.
+
+A targeted primary-source and web search on October 3, 2026 did not
+identify an earlier explicit statement of the family $4791p^p$ or its
+displayed seed witness. This limited search does not establish absolute
+priority: indexing gaps and literature unavailable in full text can hide
+precedents. In particular, the 2013 Hoepli book by G. Balzarotti and
+P. P. Lava, \emph{La derivata aritmetica}, listed in A003415~\cite{derivative},
+was not available to this project in full text and was not consulted.
+The family is therefore presented with its proof and known
+antecedents, without asserting a first discovery of the underlying
+mechanism or excluding an earlier occurrence of this particular family.
+
+\section{Exact enumeration algorithm}\label{sec:algorithm}
+The campaign used a C17 program with an unsigned 128-bit integer extension,
+GMP integer arithmetic, OpenMP, and OpenSSL digest routines. The final code
+does not use FLINT. Its mathematical stages are segmented evaluation of the
+first derivative, exact factorization of the next three operands, and an
+exact square test. Operational segments group consecutive blocks; the
+mathematical processing within each block is independent of this grouping.
+
+\subsection{Consecutive inputs and the first derivative}
+For each operational segment the program precomputes the primes through the
+integer square root of the segment upper endpoint. Each block processes
+only the table prefix satisfying $p^2\le H$, where $H$ is the block upper
+endpoint. Within a block, a residual array
+starts at the original inputs $n$, and a derivative accumulator starts at
+zero. For each processed prime $p$, all block multiples of $p$ are visited;
+the full multiplicity $e$ is removed from their residuals, and $e(n/p)$ is
+added to their accumulators. At every stage, the product of the residual
+and the removed prime powers is $n$, and the accumulator is precisely the
+contribution of those removed powers in~\eqref{eq:derivative}.
+
+After all primes through the block square root have been processed, any
+residual greater than one is prime: a composite residual would have a prime
+factor no larger than its square root, hence no larger than that of $n$,
+and would already have been divided out. Its remaining contribution $n/q$
+is then added. This proves exact evaluation of $\D(n)$ for every block input.
+
+The implemented early exclusion is the prime-input case. For $n\ge2$,
+$\D(n)=1$ holds exactly when $n$ is prime. Composite inputs have at least
+two prime factors counted with multiplicity and derivative greater than one.
+For a prime, the chain is $(n,1,0,0,0)$, and
+$n^2<n^2+1<(n+1)^2$. Such inputs cannot qualify. The code uses no filter
+requiring the factor $1597$ and no separately implemented congruence filter.
+
+\subsection{Derived operands and deterministic completion}
+Each of $x_1,x_2,x_3$ is factored to obtain the next derivative. The word-size
+primality routine applies small-prime divisions followed by the strong
+probable-prime test with bases
+\[
+2,\ 325,\ 9375,\ 28178,\ 450775,\ 9780504,\ 1795265022.
+\]
+These seven bases are sufficient for deterministic primality below $2^{64}$,
+as recorded by Fori\v{s}ek and Jan\v{c}ina~\cite[Theorem 3]{forisek}.
+Each base is reduced modulo the operand, with zero residues skipped.
+Modular products use unsigned 128-bit arithmetic, so they are exact for
+word-size operands.
+
+The splitter first checks small divisors through 97. It then tries 32
+Pollard-rho-style trajectories~\cite{pollard}, with the recurrence $z\mapsto z^2+c\pmod n$,
+Floyd cycle comparison and greatest common divisors, using at most $100000$
+steps per trajectory. This is an acceleration rather than a correctness
+assumption. If the trajectories do not split a known composite, exhaustive
+odd trial division from 101 through its square root supplies a deterministic
+fallback. The condition $d\le n/d$ avoids overflow in the loop bound.
+
+A proper factor splits the problem recursively into two smaller positive
+operands. Every accepted leaf is checked prime, all multiplicities are
+collected, and the reconstructed product is required to equal the original
+operand. There are at most 63 prime factors counted with multiplicity for
+a positive operand below $2^{64}$, so the 64-entry factor array suffices.
+Reconstruction multiplies only a partial product by one word-size factor
+at a time in the wider type. Equation~\eqref{eq:derivative} then gives the
+derivative exactly. Operands zero and one produce zero directly.
+Termination follows from strictly smaller recursive operands and finite
+fallback trial division. An interrupt or unsuccessful arithmetic operation
+leaves a block incomplete; it is never recorded as a negative result.
+
+\subsection{Integer bounds and the square test}
+For $x\ge2$, if $\Omega(x)=\sum e_p$, then
+\begin{equation}\label{eq:bound}
+\D(x)\le \frac{x\Omega(x)}2
+\le \frac{x\lfloor\log_2x\rfloor}2.
+\end{equation}
+The first inequality follows from $p\ge2$ and the second from
+$2^{\Omega(x)}\le x$. This is the elementary derivative bound underlying
+the width analysis; its logarithmic version appears in~\cite[Theorem 9]{ufnarovski}.
+The integer envelope $F(U)=\lfloor U\lfloor\log_2U\rfloor/2\rfloor$ is
+nondecreasing for $U\ge2$. Starting from $U_0=9\cdot10^{14}$ and applying
+$U_{j+1}=F(U_j)$ gives
+\begin{align*}
+U_1&=22050000000000000,\\
+U_2&=595350000000000000,\\
+U_3&=17562825000000000000<2^{64},\\
+U_4&=553228987500000000000<2^{128}.
+\end{align*}
+The zero and one cases also satisfy these envelopes. Thus $x_0$ through
+$x_3$ fit the word type, while $x_4$ uses the wider type. Even the conservative
+bound $\sum U_j^2$ needs 138 bits: the square sum is therefore formed in GMP,
+not in a fixed 128-bit accumulator. GMP's integer perfect-square predicate
+and square root~\cite{gmp} decide~\eqref{eq:predicate}; the root is checked
+on export to the wider type. There is no floating-point membership decision.
+Indeed $r\le\sqrt{5}\,U_4<2^{71}$ in this envelope.
+
+Additional program constraints support this domain on the measured 64-bit
+platform. Blocks have a power-of-two width between $2^{14}$ and $2^{20}$,
+thread counts are between one and eight, and segment counts are below $2^{40}$.
+The prime table bound is at most $30000000$, fitting its 32-bit entries.
+A block uses two 64-bit arrays and one byte array, at most 17 MiB altogether,
+in addition to the prime table and worker state. Segment-width and endpoint
+calculations use the wider type: a word-size block-group count times a
+$2^{20}$ block is below $2^{84}$, and multiplying by a segment identifier
+below $2^{40}$ remains below $2^{124}$, with the bounded endpoint additions
+also safe. Allocation, I/O and elapsed-time errors cause failure rather than
+certification. The cap is a sufficient numerical domain, not a maximum
+mathematical domain, a runtime estimate, or a claim of feasible enumeration
+to that endpoint. For comparison, the same sufficient envelope at $10^{15}$
+already gives $U_3=19514250000000000000>2^{64}$.
+
+\subsection{Parallel blocks and persistent coverage}
+The residual sieve is followed by an OpenMP loop with dynamic scheduling.
+Each input owns a separate result flag, and worker-local factorization and
+GMP state avoid shared arithmetic mutation. A lock-free atomic stop flag
+communicates interruption. All inputs must reach a complete positive or
+negative state before the block is accepted. Positive flags are reevaluated
+serially and emitted in increasing input order. A failed or interrupted
+block does not advance the saved frontier.
+
+Checkpoints persist only fully processed blocks. A segment is sealed only
+when its frontier reaches its specified upper endpoint. Each saved state
+contains its bounds, frontier and positive rows, together with a digest of
+its serialized content; a separate seal binds the complete segment file.
+Saved configuration binds the source, build recipe and executable identities.
+Exclusive advisory locking prevents simultaneous cooperating writers, while
+readers use shared locks. Atomic replacement uses an exclusive temporary
+file, flushing, file synchronization, rename, and directory synchronization;
+initialization also synchronizes the parent directory.
+
+On restart, the program audits the stored records and resumes after the last
+saved complete block. Work in an unsaved partial block is repeated. This
+preserves coverage without promising resumability inside an input's
+factorization. If a seal was committed before its aggregate tables, a valid
+short aggregate prefix is classified as repairable and rebuilt from the
+segment authority; a changed row is rejected. Within each run, sealed segment
+endpoints and their adjacency establish coverage rather than an aggregate
+count alone. The two campaign phases are separate runs; their cross-phase
+join and combined cardinality are checked externally from the configurations
+and completed records. These guarantees assume a cooperating local-filesystem environment.
+They do not establish resistance to forged unkeyed digests, arbitrary hardware
+faults, noncooperating writers, or every power-loss/filesystem behavior.
+
+The native verification command audits identities, framing, bounds, seals,
+ordering and aggregate consistency, and reevaluates the stored positive
+witnesses with the same arithmetic backend. It does not process every
+excluded input again. Accordingly, it corroborates persistent coverage and
+positive consistency but is correlated with the enumeration kernel.
+
+\subsection{Cost and reproducibility}
+Sieving consecutive original inputs reduces repeated factorization of those
+inputs. The derivative values themselves are not a consecutive interval.
+The cost includes prime-table construction per segment, block sieving,
+factorization of derived operands, exact square tests, and persistent-state
+audits. In particular, deterministic trial division can dominate difficult
+fallback cases. No global $O(N\log\log N)$ claim is made for the complete
+predicate. Aggregate rebuilding also grows with the number of sealed records.
+
+The source and build recipe specify C17 with optimization level three,
+strict warnings, OpenMP, and linkage to GMP and OpenSSL. Independent positive
+validators use Python integer arithmetic and exhaustive trial division,
+followed by an integer square root and an exact equality test. The earlier
+sixth-term validator must read the frozen one-hit state supplied to it;
+the later two-hit state is a different protocol input. The seventh-term
+validator imports that same trial-division routine, requires textual identity
+of the recorded first hit with the frozen, previously validated sixth-term
+input, and recomputes only the new seventh-term hit. These two validators are
+independent of the C factorization backend, but share their own Python
+arithmetic routine and the defining equation. A reproducible deposit would
+need the frozen inputs as well as the scripts; a script alone cannot replay
+the historical protocol states.
+
+\section{Validation and measured execution}\label{sec:validation}
+The independent positive checks factored four operands for each new term,
+computed the four derivatives, and tested the resulting sum with an exact
+integer root. Each historical check requested and produced one distinct
+new positive witness. For the sixth term the operand
+factorizations are
+\begin{align*}
+x_0&=3\cdot43\cdot59\cdot144899,&x_1&=2^2\cdot102988867,\\
+x_2&=2^4\cdot109\cdot199\cdot1187,&x_3&=2^4\cdot3\cdot23\cdot751909.
+\end{align*}
+For the seventh they are
+\begin{align*}
+x_0&=3\cdot7^7\cdot1597,&x_1&=7^8\cdot11\cdot83,\\
+x_2&=2\cdot3\cdot7^7\cdot1327,&x_3&=7^7\cdot17\cdot859.
+\end{align*}
+The square sums are respectively
+$6137488686385847025$ and $393395870932753190544$.
+These checks verify membership, not the absence of smaller members.
+
+Implementation checks retained in the project include the five baseline
+singletons, each compared with the SymPy oracle, and independent
+SymPy-based hit-set comparisons over
+$[2,500]$, $[19150,19180]$ and $[129340,129370]$, respectively 499, 31 and
+31 inputs. One-, four- and eight-thread comparisons on a low window and a
+16384-input window ending at the technical cap tested deterministic output;
+they are comparisons of the same program, not independent oracles for the
+whole cap domain. Segment-grouping and interrupted-resume tests checked
+the coverage contract, while altered rows, digests and frontiers were
+required to fail. A forced-fallback harness exercised the factorization
+fallback and wide-root paths.
+
+These arithmetic and broad operational tests ran on the earlier build.
+Their transfer to the campaign build is restricted to the source regions
+that are byte-identical. The final change added an initialization path-length
+guard; it did not change arithmetic, block processing or thread behavior.
+Targeted final-build tests exercised that guard and adjacent I/O error paths.
+AddressSanitizer and UndefinedBehaviorSanitizer checks on the earlier build
+covered the first singleton and the small initial interval, with leak
+sanitization unavailable. A separate Clang thread-sanitizer check exercised
+a four-thread small interval with OpenMP instrumentation and a race-detection
+control; it was not a whole-campaign or final-build thread-sanitizer run.
+Final-build initialization sanitizer checks supplied additional bounded
+evidence. These checks detect particular implementation
+faults; none replaces the domain proof or independently enumerates billions
+of negative cases.
+
+During manuscript preparation, a bounded seed check verified the four small
+factorizations in Theorem~\ref{thm:family} and their agreement with existing
+rows 1, 2, 3 and 7. A bounded Python trial-division check also recomputed all
+seven chains and their roots, independently of the C factorization backend;
+it used the same Python factorization routine as the historical positive
+validators. Another finite integer check verified the seven table
+square identities, segment adjacency and counts, timing sum and width
+envelopes. These are mathematical and bookkeeping checks, not extensions
+of the official search.
+The expanded exposition includes a bounded check of the eight prime
+parameters $2,3,5,7,11,13,17,19$, the depth-two seed $128$, constant
+fixed-point chains and three twin-prime examples. Direct trial-division
+derivatives confirm the displayed positive chains. These checks corroborate
+examples; the general statements depend on their proofs, and no new
+sequence indices are certified.
+
+The author executed the campaign on an AMD Ryzen 9 7940HS processor running
+Linux Mint 22.3, with Linux kernel 6.17.0-42-generic, x86-64, glibc 2.39
+and GCC 13.3.0.
+The recorded runtime libraries include GMP, OpenSSL's crypto library and
+GNU OpenMP. All seven externally timed segment-advance calls exited zero.
+Their elapsed times sum to approximately 7984 seconds, or 2 hours 13 minutes
+4 seconds, using eight threads. This total includes the work performed
+inside those calls and excludes unrecorded initialization, separate audits
+and manual activity. Dividing~\eqref{eq:count} by the recorded elapsed time
+gives approximately $1.20\cdot10^6$ original inputs per second for this
+campaign. This is an aggregate measurement, not a constant per-input cost
+or an extrapolation to another decade or to the technical cap.
+
+\section{Consequences and limits}
+Relative to the accepted five-term baseline, the finite computation adds
+two consecutive terms and excludes additional members through $10^{10}$.
+Its negative evidence rests on complete execution of the exact C algorithm;
+only positives and small windows have independent arithmetic comparisons.
+The full earlier prefix interval was not rescanned.
+
+The independent mathematical consequence is stronger than finite density
+evidence: the explicit fixed-point family proves infinitude. It explains
+four witnesses in the consolidated prefix while leaving three primitive
+witnesses outside the family. Combining the proof and finite exclusion
+gives~\eqref{eq:eighth}, but neither determines $a(8)$ nor rules out further
+members between $10^{10}$ and the displayed upper bound. No conjecture about density,
+successive indices or a complete classification is proposed.
+The criterion in Section~\ref{sec:related} explains how the historical
+mechanism yields families at other depths. The examples and source
+comparison distinguish the mechanism from its particular specializations;
+the literature search does not certify absolute priority.
+
+\section{Data availability}
+The source code, build recipe, accepted baseline, indexed result table,
+complete segment records, environment and timing records, independent
+positive-check scripts with their frozen inputs, and validation summaries
+are retained locally. The witness table is also embedded in this manuscript.
+These artifact classes are intended for a synchronized public release.
+The seed checks and research records for the expanded exposition are
+also retained locally; their public distribution has not been verified.
+At this drafting stage a public package and a Zenodo deposit have not been
+verified, and the designated draft locators do not establish availability.
+
+\section{AI use disclosure}
+Large language models were used as research and drafting assistants during
+the A249106 workflow, including OpenAI Codex and external LLM-based review
+systems from the ChatGPT, Claude, DeepSeek, Gemini, Grok, Qwen, MiniMax,
+Meta and Z.ai families. They are named at family level where exact
+model-version metadata were not consistently available in the local artifacts.
+\paragraph{Mathematical analysis.}
+OpenAI Codex assisted in reconstructing the definition, checking primary
+sources, analyzing the seed scaling identity, and organizing the proof and
+finite evidence. AI-generated preliminary triage reports and a stored
+NotebookLM synthesis informed earlier selection and strategy research;
+they were not treated as proofs or as substitutes for primary sources.
+One preliminary triage had noted the shared factor $1597$ in the first three
+terms as an unproved pattern; the fixed-point family and its proof followed
+the finite campaign.
+
+\paragraph{Algorithm and code.}
+OpenAI Codex assisted with implementation and local validation. The retained
+code-review reports include OpenAI, Anthropic Claude, Z.ai GLM-5.3, Google
+Gemini, xAI Grok, DeepSeek, Meta, MiniMax and Alibaba Qwen tools. Their roles
+were code and artifact review, with execution claims distinguished from
+static reasoning. Model versions are not inferred from filenames or behavior;
+the attribution of GLM-5.3 is to Z.ai. These reports concern code and do not
+constitute external review of this manuscript.
+
+\paragraph{Manuscript.}
+OpenAI Codex assisted in drafting the English text and in sequential internal
+mathematical, numerical, source and exposition checks. These passes share the
+drafting context and are not independent external reviews. The first full
+external manuscript round supplied nine reports from the ChatGPT, Claude,
+DeepSeek, Gemini, GLM, Grok, Meta, MiniMax and Qwen families. Their observations
+were checked against the source artifacts before incorporation; reported
+remote executions were not treated as locally reproduced evidence.
+A focused second round supplied reports from Claude and ChatGPT, leading
+to final clarifications of positive-validation provenance and citation wording.
+Family overlap with code review, and the OpenAI drafting/review relationship,
+limit independence.
+The author subsequently requested a fuller account of Theorem~\ref{thm:family}.
+OpenAI Codex assisted with the primary-source comparison, the general seed
+criterion and the A230543 example, followed by bounded arithmetic checks
+and sequential internal review. A focused third review of the expanded
+text, from the Claude family, found no scientific issue and suggested
+clarifications of attribution, scope and exposition. These were checked
+against the retained sources before incorporation; family overlap with
+earlier rounds limits independence. The final claims
+are based on source artifacts, recorded computations, independent positive
+validators and primary literature, not conversational assertions.
+Carlo Corti retains full scientific responsibility for the mathematical
+statements, implementation, numerical results, validation boundaries and
+conclusions.
+
+\clearpage
+\begin{thebibliography}{99}
+\bibitem{sequence}
+P. P. Lava, OEIS A249106, Numbers that form a Pythagorean 6-tuple with their
+first four arithmetic derivatives (2014), with extensions by R. Chandler
+(2016, 2017). \url{https://oeis.org/A249106}.
+Consulted via the archived entry snapshot matching the public entry.
+
+\bibitem{derivative}
+N. J. A. Sloane and R. K. Guy, OEIS A003415 (arithmetic derivative of $n$).
+\url{https://oeis.org/A003415}. Consulted October 3, 2026.
+
+\bibitem{auxiliary}
+A. Auel, OEIS A051674, $p^p$ for prime $p$;
+R. Zumkeller, OEIS A129283, $n+\D(n)$ (April 7, 2007).
+\url{https://oeis.org/A051674}, \url{https://oeis.org/A129283}.
+Consulted October 3, 2026.
+
+\bibitem{related}
+P. P. Lava, OEIS entries A210503 (January 25, 2013),
+A230543 (October 25, 2013), and A249105, A249107 and A249110
+(October 21, 2014).
+\url{https://oeis.org/A210503}, \url{https://oeis.org/A230543},
+\url{https://oeis.org/A249105}, \url{https://oeis.org/A249107},
+\url{https://oeis.org/A249110}. Consulted October 3, 2026.
+
+\bibitem{ufnarovski}
+V. Ufnarovski and B. \AA hlander, How to differentiate a number,
+\emph{Journal of Integer Sequences} \textbf{6} (2003), Article 03.3.4.
+\url{https://cs.uwaterloo.ca/journals/JIS/VOL6/Ufnarovski/ufnarovski.pdf}.
+
+\bibitem{kovic}
+J. Kovi\v{c}, The arithmetic derivative and antiderivative,
+\emph{Journal of Integer Sequences} \textbf{15} (2012), Article 12.3.8.
+\url{https://cs.uwaterloo.ca/journals/JIS/VOL15/Kovic/kovic4.html}.
+Original full-text source consulted October 3, 2026.
+
+\bibitem{frisch}
+S. Frisch and L. Vaserstein, Polynomial parametrization of Pythagorean
+quadruples, quintuples and sextuples, \emph{Journal of Pure and Applied
+Algebra} \textbf{216} (2012), 184--191.
+\url{https://doi.org/10.1016/j.jpaa.2011.06.002}.
+Text consulted: arXiv:1106.3493v2 (June 28, 2011).
+Preprint DOI: \url{https://doi.org/10.48550/arXiv.1106.3493}.
+Theorem numbering refers to that preprint version.
+
+\bibitem{forisek}
+M. Fori\v{s}ek and J. Jan\v{c}ina, Fast primality testing for integers that fit
+into a machine word, in \emph{Student Research Forum Papers and Posters at
+SOFSEM 2015}, CEUR Workshop Proceedings \textbf{1326} (2015), 20--30.
+\url{https://ceur-ws.org/Vol-1326/020-Forisek.pdf}.
+
+\bibitem{pollard}
+J. M. Pollard, A Monte Carlo method for factorization,
+\emph{BIT} \textbf{15} (1975), 331--334.
+\url{https://doi.org/10.1007/BF01933667}.
+
+\bibitem{gmp}
+GNU MP project, GNU MP 6.3.0 manual, Section 5.8, Root extraction functions.
+\url{https://gmplib.org/manual/Integer-Roots}. Consulted October 2, 2026.
+
+\bibitem{project}
+C. Corti, \emph{An Exact Extension and an Infinite Family for OEIS A249106}
+(2026), GitHub repository and Zenodo archive.
+\url{https://github.com/carcorti/A249106};
+\url{https://doi.org/10.5281/zenodo.xxxxxxxx}.
+Designated draft locators; the Zenodo identifier is a placeholder and a public
+release has not been verified.
+\end{thebibliography}
+\end{document}
+
